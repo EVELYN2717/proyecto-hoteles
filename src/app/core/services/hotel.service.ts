@@ -1,6 +1,7 @@
 import { Injectable, signal, computed } from '@angular/core';
 import { Hotel, Room } from '../models/hotel.model';
-import { v4 as uuid } from 'uuid';
+
+const uuid = () => crypto.randomUUID();
 
 const SEED_HOTELS: Hotel[] = [
   {

@@ -1,6 +1,7 @@
 import { Injectable, signal } from '@angular/core';
 import { Booking } from '../models/booking.model';
-import { v4 as uuid } from 'uuid';
+
+const uuid = () => crypto.randomUUID();
 
 @Injectable({ providedIn: 'root' })
 export class BookingService {
