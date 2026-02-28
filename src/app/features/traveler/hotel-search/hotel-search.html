@@ -8,20 +8,17 @@
       <div class="form-group">
         <label for="city">Ciudad *</label>
         <input id="city" formControlName="city" placeholder="Ej: Bogota, Cartagena, Medellin" />
-        @if (searchForm.get('city')?.invalid && searchForm.get('city')?.touched) {
-          <span class="error-message">La ciudad es obligatoria</span>
-        }
+        <span class="error-message" [class.visible]="searchForm.get('city')?.invalid && searchForm.get('city')?.touched">La ciudad es obligatoria</span>
       </div>
       <div class="form-group">
         <label for="checkIn">Fecha entrada *</label>
         <input id="checkIn" type="date" formControlName="checkIn" [min]="today" (change)="onCheckInChange()" />
-        @if (searchForm.get('checkIn')?.invalid && searchForm.get('checkIn')?.touched) {
-          <span class="error-message">La fecha de entrada es obligatoria</span>
-        }
+        <span class="error-message" [class.visible]="searchForm.get('checkIn')?.invalid && searchForm.get('checkIn')?.touched">Fecha de entrada obligatoria</span>
       </div>
       <div class="form-group">
         <label for="checkOut">Fecha salida</label>
         <input id="checkOut" type="date" formControlName="checkOut" [min]="minCheckOut()" />
+        <span class="error-message">&nbsp;</span>
       </div>
       <button type="submit" class="btn btn--primary search-btn">Buscar</button>
     </div>

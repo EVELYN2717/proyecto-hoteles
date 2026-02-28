@@ -9,25 +9,19 @@
       <div class="form-group">
         <label for="name">Nombre del hotel *</label>
         <input id="name" formControlName="name" placeholder="Ej: Hotel Paradise" />
-        @if (isFieldInvalid(hotelForm, 'name')) {
-          <span class="error-message">Mínimo 3 caracteres</span>
-        }
+        <span class="error-message" [class.visible]="isFieldInvalid(hotelForm, 'name')">Mínimo 3 caracteres</span>
       </div>
 
       <div class="form-group">
         <label for="city">Ciudad *</label>
         <input id="city" formControlName="city" placeholder="Ej: Bogota" />
-        @if (isFieldInvalid(hotelForm, 'city')) {
-          <span class="error-message">Campo requerido</span>
-        }
+        <span class="error-message" [class.visible]="isFieldInvalid(hotelForm, 'city')">Campo requerido</span>
       </div>
 
       <div class="form-group">
         <label for="address">Dirección *</label>
         <input id="address" formControlName="address" placeholder="Ej: Calle 10 #5-30" />
-        @if (isFieldInvalid(hotelForm, 'address')) {
-          <span class="error-message">Campo requerido</span>
-        }
+        <span class="error-message" [class.visible]="isFieldInvalid(hotelForm, 'address')">Campo requerido</span>
       </div>
 
       <div class="form-group">
@@ -42,9 +36,7 @@
       <div class="form-group full-width">
         <label for="description">Descripción *</label>
         <textarea id="description" formControlName="description" rows="3" placeholder="Describe el hotel..."></textarea>
-        @if (isFieldInvalid(hotelForm, 'description')) {
-          <span class="error-message">Mínimo 10 caracteres</span>
-        }
+        <span class="error-message" [class.visible]="isFieldInvalid(hotelForm, 'description')">Mínimo 10 caracteres</span>
       </div>
 
       <div class="form-group full-width">
@@ -82,24 +74,22 @@
             <div class="form-group">
               <label>Costo base (COP) *</label>
               <input type="number" formControlName="baseCost" />
-              @if (isFieldInvalid(roomForm, 'baseCost')) {
-                <span class="error-message">Debe ser mayor a 0</span>
-              }
+              <span class="error-message" [class.visible]="isFieldInvalid(roomForm, 'baseCost')">Debe ser mayor a 0</span>
             </div>
             <div class="form-group">
               <label>Impuestos (COP) *</label>
               <input type="number" formControlName="taxes" />
+              <span class="error-message">&nbsp;</span>
             </div>
             <div class="form-group">
               <label>Capacidad *</label>
               <input type="number" formControlName="capacity" min="1" max="10" />
+              <span class="error-message">&nbsp;</span>
             </div>
             <div class="form-group full-width">
               <label>Ubicación *</label>
               <input formControlName="location" placeholder="Ej: Piso 3 - Hab 301" />
-              @if (isFieldInvalid(roomForm, 'location')) {
-                <span class="error-message">Campo requerido</span>
-              }
+              <span class="error-message" [class.visible]="isFieldInvalid(roomForm, 'location')">Campo requerido</span>
             </div>
           </div>
           <div class="form-actions">
