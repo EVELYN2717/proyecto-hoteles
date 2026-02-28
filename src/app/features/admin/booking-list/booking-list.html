@@ -1,0 +1,129 @@
+<div class="page-container">
+  <div class="page-header">
+    <h2>Gestión de Reservas</h2>
+  </div>
+
+  @if (allBookings().length === 0) {
+    <div class="empty-state">
+      <h3>No hay reservas registradas</h3>
+      <p>Las reservas aparecerán aquí cuando los viajeros realicen sus reservaciones.</p>
+    </div>
+  } @else {
+    <div class="filter-bar card">
+      <label class="filter-label">Filtrar por hotel:</label>
+      <div class="hotel-chips">
+        <button
+          class="chip"
+          [class.active]="selectedHotelId() === null"
+          (click)="selectedHotelId.set(null)"
+        >
+          Todos ({{ allBookings().length }})
+        </button>
+        @for (hotel of hotels(); track hotel.id) {
+          @if (bookingService.getByHotelId(hotel.id).length > 0) {
+            <button
+              class="chip"
+              [class.active]="selectedHotelId() === hotel.id"
+              (click)="selectHotel(hotel.id)"
+            >
+              {{ hotel.name }} ({{ bookingService.getByHotelId(hotel.id).length }})
+            </button>
+          }
+        }
+      </div>
+    </div>
+
+    <div class="bookings-layout">
+      <div class="bookings-list">
+        @for (booking of filteredBookings(); track booking.id) {
+          <div
+            class="booking-row card"
+            [class.selected]="selectedBooking()?.id === booking.id"
+            (click)="viewDetail(booking)"
+          >
+            <div class="booking-row__main">
+              <div class="booking-row__info">
+                <span class="guest-name">{{ booking.guest.fullName }}</span>
+                <span class="hotel-name">{{ booking.hotelName }}</span>
+              </div>
+              <div class="booking-row__meta">
+                <span class="room-badge">{{ booking.roomType }}</span>
+                <span class="booking-total">{{ booking.totalCost | currency:'COP':'symbol-narrow':'1.0-0' }}</span>
+              </div>
+            </div>
+            <div class="booking-row__date">
+              {{ booking.createdAt | date:'short' }}
+            </div>
+          </div>
+        }
+      </div>
+
+      @if (selectedBooking(); as b) {
+        <aside class="booking-detail card">
+          <h3>Detalle de Reserva</h3>
+          <p class="detail-id">ID: {{ b.id }}</p>
+
+          <div class="detail-section">
+            <h4>Hotel</h4>
+            <div class="detail-row">
+              <span>Hotel</span>
+              <strong>{{ b.hotelName }}</strong>
+            </div>
+            <div class="detail-row">
+              <span>Habitación</span>
+              <strong class="type-badge">{{ b.roomType }}</strong>
+            </div>
+            <div class="detail-row">
+              <span>Total</span>
+              <strong>{{ b.totalCost | currency:'COP':'symbol-narrow':'1.0-0' }}</strong>
+            </div>
+            <div class="detail-row">
+              <span>Fecha reserva</span>
+              <strong>{{ b.createdAt | date:'medium' }}</strong>
+            </div>
+          </div>
+
+          <div class="detail-section">
+            <h4>Huésped</h4>
+            <div class="detail-row">
+              <span>Nombre</span>
+              <strong>{{ b.guest.fullName }}</strong>
+            </div>
+            <div class="detail-row">
+              <span>Documento</span>
+              <strong>{{ b.guest.documentType | uppercase }} {{ b.guest.documentNumber }}</strong>
+            </div>
+            <div class="detail-row">
+              <span>Nacimiento</span>
+              <strong>{{ b.guest.birthDate | date:'mediumDate' }}</strong>
+            </div>
+            <div class="detail-row">
+              <span>Género</span>
+              <strong>{{ b.guest.gender === 'male' ? 'Masculino' : b.guest.gender === 'female' ? 'Femenino' : 'Otro' }}</strong>
+            </div>
+            <div class="detail-row">
+              <span>Email</span>
+              <strong>{{ b.guest.email }}</strong>
+            </div>
+            <div class="detail-row">
+              <span>Teléfono</span>
+              <strong>{{ b.guest.phone }}</strong>
+            </div>
+          </div>
+
+          <div class="detail-section">
+            <h4>Contacto de Emergencia</h4>
+            <div class="detail-row">
+              <span>Nombre</span>
+              <strong>{{ b.emergencyContact.fullName }}</strong>
+            </div>
+            <div class="detail-row">
+              <span>Teléfono</span>
+              <strong>{{ b.emergencyContact.phone }}</strong>
+            </div>
+          </div>
+        </aside>
+      }
+    </div>
+  }
+</div>

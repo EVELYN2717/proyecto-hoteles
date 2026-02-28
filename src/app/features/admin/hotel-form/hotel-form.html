@@ -1,0 +1,164 @@
+<div class="page-container">
+  <div class="page-header">
+    <h2>{{ isEdit() ? 'Editar Hotel' : 'Nuevo Hotel' }}</h2>
+    <a routerLink="/admin/hotels" class="btn btn--secondary">Volver</a>
+  </div>
+
+  <form [formGroup]="hotelForm" (ngSubmit)="onSubmit()" class="card form-card">
+    <div class="form-grid">
+      <div class="form-group">
+        <label for="name">Nombre del hotel *</label>
+        <input id="name" formControlName="name" placeholder="Ej: Hotel Paradise" />
+        @if (isFieldInvalid(hotelForm, 'name')) {
+          <span class="error-message">Mínimo 3 caracteres</span>
+        }
+      </div>
+
+      <div class="form-group">
+        <label for="city">Ciudad *</label>
+        <input id="city" formControlName="city" placeholder="Ej: Bogota" />
+        @if (isFieldInvalid(hotelForm, 'city')) {
+          <span class="error-message">Campo requerido</span>
+        }
+      </div>
+
+      <div class="form-group">
+        <label for="address">Dirección *</label>
+        <input id="address" formControlName="address" placeholder="Ej: Calle 10 #5-30" />
+        @if (isFieldInvalid(hotelForm, 'address')) {
+          <span class="error-message">Campo requerido</span>
+        }
+      </div>
+
+      <div class="form-group">
+        <label for="stars">Estrellas *</label>
+        <select id="stars" formControlName="stars">
+          @for (s of [1,2,3,4,5]; track s) {
+            <option [value]="s">{{ s }} &#9733;</option>
+          }
+        </select>
+      </div>
+
+      <div class="form-group full-width">
+        <label for="description">Descripción *</label>
+        <textarea id="description" formControlName="description" rows="3" placeholder="Describe el hotel..."></textarea>
+        @if (isFieldInvalid(hotelForm, 'description')) {
+          <span class="error-message">Mínimo 10 caracteres</span>
+        }
+      </div>
+
+      <div class="form-group full-width">
+        <label for="imageUrl">URL de imagen</label>
+        <input id="imageUrl" formControlName="imageUrl" placeholder="https://..." />
+      </div>
+    </div>
+
+    <div class="form-actions">
+      <button type="submit" class="btn btn--primary" [disabled]="hotelForm.invalid">
+        {{ isEdit() ? 'Guardar Cambios' : 'Crear Hotel' }}
+      </button>
+    </div>
+  </form>
+
+  @if (isEdit() && hotel()) {
+    <section class="rooms-section">
+      <div class="section-header">
+        <h3>Habitaciones ({{ hotel()!.rooms.length }})</h3>
+        <button class="btn btn--primary" (click)="openRoomForm()">+ Agregar Habitación</button>
+      </div>
+
+      @if (showRoomForm()) {
+        <form [formGroup]="roomForm" (ngSubmit)="saveRoom()" class="card room-form">
+          <h4>{{ editingRoomId() ? 'Editar Habitación' : 'Nueva Habitación' }}</h4>
+          <div class="form-grid">
+            <div class="form-group">
+              <label>Tipo *</label>
+              <select formControlName="type">
+                @for (rt of roomTypes; track rt.value) {
+                  <option [value]="rt.value">{{ rt.label }}</option>
+                }
+              </select>
+            </div>
+            <div class="form-group">
+              <label>Costo base (COP) *</label>
+              <input type="number" formControlName="baseCost" />
+              @if (isFieldInvalid(roomForm, 'baseCost')) {
+                <span class="error-message">Debe ser mayor a 0</span>
+              }
+            </div>
+            <div class="form-group">
+              <label>Impuestos (COP) *</label>
+              <input type="number" formControlName="taxes" />
+            </div>
+            <div class="form-group">
+              <label>Capacidad *</label>
+              <input type="number" formControlName="capacity" min="1" max="10" />
+            </div>
+            <div class="form-group full-width">
+              <label>Ubicación *</label>
+              <input formControlName="location" placeholder="Ej: Piso 3 - Hab 301" />
+              @if (isFieldInvalid(roomForm, 'location')) {
+                <span class="error-message">Campo requerido</span>
+              }
+            </div>
+          </div>
+          <div class="form-actions">
+            <button type="button" class="btn btn--secondary" (click)="cancelRoomForm()">Cancelar</button>
+            <button type="submit" class="btn btn--primary">Guardar Habitación</button>
+          </div>
+        </form>
+      }
+
+      @if (hotel()!.rooms.length === 0) {
+        <div class="empty-state">
+          <p>No hay habitaciones. Agrega la primera.</p>
+        </div>
+      } @else {
+        <div class="rooms-table-wrapper">
+          <table class="rooms-table">
+            <thead>
+              <tr>
+                <th>Tipo</th>
+                <th>Ubicación</th>
+                <th>Capacidad</th>
+                <th>Costo</th>
+                <th>Impuestos</th>
+                <th>Estado</th>
+                <th>Acciones</th>
+              </tr>
+            </thead>
+            <tbody>
+              @for (room of hotel()!.rooms; track room.id) {
+                <tr [class.unavailable]="!room.isAvailable">
+                  <td>
+                    <span class="room-type-badge">{{ room.type }}</span>
+                  </td>
+                  <td>{{ room.location }}</td>
+                  <td>{{ room.capacity }}</td>
+                  <td>{{ room.baseCost | currency:'COP':'symbol-narrow':'1.0-0' }}</td>
+                  <td>{{ room.taxes | currency:'COP':'symbol-narrow':'1.0-0' }}</td>
+                  <td>
+                    <span class="avail-badge" [class.available]="room.isAvailable">
+                      {{ room.isAvailable ? 'Disponible' : 'No disponible' }}
+                    </span>
+                  </td>
+                  <td class="actions-cell">
+                    <button class="btn btn--secondary btn--sm" (click)="openRoomForm(room)">Editar</button>
+                    <button
+                      class="btn btn--sm"
+                      [class.btn--danger]="room.isAvailable"
+                      [class.btn--success]="!room.isAvailable"
+                      (click)="toggleRoomAvailability(room.id)"
+                    >
+                      {{ room.isAvailable ? 'Deshab.' : 'Habilitar' }}
+                    </button>
+                  </td>
+                </tr>
+              }
+            </tbody>
+          </table>
+        </div>
+      }
+    </section>
+  }
+</div>

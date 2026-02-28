@@ -1,0 +1,50 @@
+<div class="page-container">
+  <div class="page-header">
+    <h2>Gestión de Hoteles</h2>
+    <a routerLink="/admin/hotels/new" class="btn btn--primary">+ Nuevo Hotel</a>
+  </div>
+
+  @if (hotelService.hotels().length === 0) {
+    <div class="empty-state">
+      <h3>No hay hoteles registrados</h3>
+      <p>Comienza creando tu primer hotel.</p>
+    </div>
+  } @else {
+    <div class="hotel-grid">
+      @for (hotel of hotelService.hotels(); track hotel.id) {
+        <div class="hotel-card card" [class.inactive]="!hotel.isActive">
+          <div class="hotel-card__image">
+            <img [src]="hotel.imageUrl" [alt]="hotel.name" />
+            <span class="status-badge" [class.active]="hotel.isActive" [class.disabled]="!hotel.isActive">
+              {{ hotel.isActive ? 'Activo' : 'Inactivo' }}
+            </span>
+          </div>
+          <div class="hotel-card__body">
+            <div class="hotel-card__header">
+              <h3>{{ hotel.name }}</h3>
+              <span class="stars">
+                @for (_ of starsArray(hotel.stars); track $index) {
+                  &#9733;
+                }
+              </span>
+            </div>
+            <p class="hotel-card__city">{{ hotel.city }}</p>
+            <p class="hotel-card__address">{{ hotel.address }}</p>
+            <p class="hotel-card__rooms">{{ hotel.rooms.length }} habitaciones</p>
+          </div>
+          <div class="hotel-card__actions">
+            <a [routerLink]="['/admin/hotels', hotel.id, 'edit']" class="btn btn--secondary">Editar</a>
+            <button
+              class="btn"
+              [class.btn--success]="!hotel.isActive"
+              [class.btn--danger]="hotel.isActive"
+              (click)="toggleActive(hotel.id)"
+            >
+              {{ hotel.isActive ? 'Deshabilitar' : 'Habilitar' }}
+            </button>
+          </div>
+        </div>
+      }
+    </div>
+  }
+</div>

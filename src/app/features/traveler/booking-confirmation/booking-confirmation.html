@@ -1,0 +1,70 @@
+@if (booking(); as b) {
+  <div class="page-container">
+    <div class="confirmation-wrapper">
+      <div class="card confirmation-card">
+        <div class="success-icon">&#10003;</div>
+        <h1>Reserva Confirmada</h1>
+        <p class="booking-id">ID: {{ b.id }}</p>
+
+        <div class="details-grid">
+          <div class="detail-section">
+            <h3>Hotel</h3>
+            <div class="detail-row">
+              <span>Hotel</span>
+              <strong>{{ b.hotelName }}</strong>
+            </div>
+            <div class="detail-row">
+              <span>Habitación</span>
+              <strong class="type-badge">{{ b.roomType }}</strong>
+            </div>
+            <div class="detail-row">
+              <span>Total pagado</span>
+              <strong>{{ b.totalCost | currency:'COP':'symbol-narrow':'1.0-0' }}</strong>
+            </div>
+            <div class="detail-row">
+              <span>Fecha de reserva</span>
+              <strong>{{ b.createdAt | date:'medium' }}</strong>
+            </div>
+          </div>
+
+          <div class="detail-section">
+            <h3>Huésped</h3>
+            <div class="detail-row">
+              <span>Nombre</span>
+              <strong>{{ b.guest.fullName }}</strong>
+            </div>
+            <div class="detail-row">
+              <span>Documento</span>
+              <strong>{{ b.guest.documentType | uppercase }} {{ b.guest.documentNumber }}</strong>
+            </div>
+            <div class="detail-row">
+              <span>Email</span>
+              <strong>{{ b.guest.email }}</strong>
+            </div>
+            <div class="detail-row">
+              <span>Teléfono</span>
+              <strong>{{ b.guest.phone }}</strong>
+            </div>
+          </div>
+
+          <div class="detail-section">
+            <h3>Contacto de Emergencia</h3>
+            <div class="detail-row">
+              <span>Nombre</span>
+              <strong>{{ b.emergencyContact.fullName }}</strong>
+            </div>
+            <div class="detail-row">
+              <span>Teléfono</span>
+              <strong>{{ b.emergencyContact.phone }}</strong>
+            </div>
+          </div>
+        </div>
+
+        <div class="confirmation-actions">
+          <a routerLink="/traveler/search" class="btn btn--primary">Buscar más hoteles</a>
+          <a routerLink="/" class="btn btn--secondary">Volver al inicio</a>
+        </div>
+      </div>
+    </div>
+  </div>
+}

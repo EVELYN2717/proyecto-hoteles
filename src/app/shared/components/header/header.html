@@ -1,0 +1,24 @@
+@if (roleState.hasRole()) {
+  <header class="app-header">
+    <div class="header-left">
+      <a routerLink="/" class="logo">HotelApp</a>
+      @if (roleState.isAdmin()) {
+        <nav class="nav-links">
+          <a routerLink="/admin/hotels" class="nav-link">Gestionar Hoteles</a>
+          <a routerLink="/admin/bookings" class="nav-link">Reservas</a>
+        </nav>
+      }
+      @if (roleState.isTraveler()) {
+        <nav class="nav-links">
+          <a routerLink="/traveler/search" class="nav-link">Buscar Hoteles</a>
+        </nav>
+      }
+    </div>
+    <div class="header-right">
+      <span class="role-badge" [class.admin]="roleState.isAdmin()" [class.traveler]="roleState.isTraveler()">
+        {{ roleState.isAdmin() ? 'Administrador' : 'Viajero' }}
+      </span>
+      <button class="btn-change-role" (click)="changeRole()">Cambiar Rol</button>
+    </div>
+  </header>
+}

@@ -1,0 +1,70 @@
+<div class="page-container">
+  <div class="page-header">
+    <h2>Buscar Hoteles</h2>
+  </div>
+
+  <form [formGroup]="searchForm" (ngSubmit)="search()" class="card search-form">
+    <div class="search-fields">
+      <div class="form-group">
+        <label for="city">Ciudad *</label>
+        <input id="city" formControlName="city" placeholder="Ej: Bogota, Cartagena, Medellin" />
+        @if (searchForm.get('city')?.invalid && searchForm.get('city')?.touched) {
+          <span class="error-message">La ciudad es obligatoria</span>
+        }
+      </div>
+      <div class="form-group">
+        <label for="checkIn">Fecha entrada *</label>
+        <input id="checkIn" type="date" formControlName="checkIn" [min]="today" (change)="onCheckInChange()" />
+        @if (searchForm.get('checkIn')?.invalid && searchForm.get('checkIn')?.touched) {
+          <span class="error-message">La fecha de entrada es obligatoria</span>
+        }
+      </div>
+      <div class="form-group">
+        <label for="checkOut">Fecha salida</label>
+        <input id="checkOut" type="date" formControlName="checkOut" [min]="minCheckOut()" />
+      </div>
+      <button type="submit" class="btn btn--primary search-btn">Buscar</button>
+    </div>
+  </form>
+
+  @if (searched()) {
+    @if (results().length === 0) {
+      <div class="empty-state">
+        <h3>No se encontraron hoteles</h3>
+        <p>Intenta buscar en otra ciudad.</p>
+      </div>
+    } @else {
+      <p class="results-count">{{ results().length }} hotel(es) encontrado(s)</p>
+      <div class="results-grid">
+        @for (hotel of results(); track hotel.id) {
+          <div class="hotel-result card">
+            <div class="result-image">
+              <img [src]="hotel.imageUrl" [alt]="hotel.name" />
+            </div>
+            <div class="result-body">
+              <div class="result-header">
+                <h3>{{ hotel.name }}</h3>
+                <span class="stars">
+                  @for (_ of starsArray(hotel.stars); track $index) {
+                    &#9733;
+                  }
+                </span>
+              </div>
+              <p class="result-city">{{ hotel.city }}</p>
+              <p class="result-desc">{{ hotel.description }}</p>
+              <div class="result-footer">
+                <div class="result-meta">
+                  <span class="avail-count">{{ getAvailableCount(hotel) }} hab. disponibles</span>
+                  @if (getMinPrice(hotel) > 0) {
+                    <span class="price">Desde {{ getMinPrice(hotel) | currency:'COP':'symbol-narrow':'1.0-0' }} / noche</span>
+                  }
+                </div>
+                <a [routerLink]="['/traveler/hotel', hotel.id]" class="btn btn--primary">Ver Detalle</a>
+              </div>
+            </div>
+          </div>
+        }
+      </div>
+    }
+  }
+</div>

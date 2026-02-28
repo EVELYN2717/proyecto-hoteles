@@ -1,0 +1,63 @@
+@if (hotel(); as h) {
+  <div class="page-container">
+    <a routerLink="/traveler/search" class="back-link">&larr; Volver a búsqueda</a>
+
+    <div class="detail-hero">
+      <img [src]="h.imageUrl" [alt]="h.name" class="hero-image" />
+      <div class="hero-overlay">
+        <h1>{{ h.name }}</h1>
+        <div class="hero-meta">
+          <span class="stars">
+            @for (_ of starsArray(h.stars); track $index) {
+              &#9733;
+            }
+          </span>
+          <span class="city-label">{{ h.city }}</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="detail-content">
+      <div class="detail-info card">
+        <h3>Información</h3>
+        <p class="desc">{{ h.description }}</p>
+        <p class="address"><strong>Dirección:</strong> {{ h.address }}</p>
+      </div>
+
+      <section class="rooms-section">
+        <h3>Habitaciones Disponibles</h3>
+        @if (h.rooms.length === 0) {
+          <div class="empty-state">
+            <p>No hay habitaciones registradas.</p>
+          </div>
+        } @else {
+          <div class="rooms-grid">
+            @for (room of h.rooms; track room.id) {
+              <div class="room-card card" [class.unavailable]="!room.isAvailable">
+                <div class="room-card__header">
+                  <span class="room-type">{{ room.type }}</span>
+                  <span class="room-capacity">{{ room.capacity }} pers.</span>
+                </div>
+                <p class="room-location">{{ room.location }}</p>
+                <div class="room-pricing">
+                  <div class="room-price">
+                    <span class="price-amount">{{ room.baseCost | currency:'COP':'symbol-narrow':'1.0-0' }}</span>
+                    <span class="price-label">/ noche</span>
+                  </div>
+                  <span class="room-taxes">+ {{ room.taxes | currency:'COP':'symbol-narrow':'1.0-0' }} impuestos</span>
+                </div>
+                @if (room.isAvailable) {
+                  <a [routerLink]="['/traveler/hotel', h.id, 'room', room.id, 'book']" class="btn btn--primary room-book-btn">
+                    Reservar
+                  </a>
+                } @else {
+                  <button class="btn btn--secondary room-book-btn" disabled>No disponible</button>
+                }
+              </div>
+            }
+          </div>
+        }
+      </section>
+    </div>
+  </div>
+}
